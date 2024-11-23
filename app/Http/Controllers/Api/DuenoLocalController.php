@@ -6,6 +6,7 @@ use App\Models\DuenoLocal;
 use App\Models\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class DuenoLocalController extends Controller
 {
@@ -46,12 +47,57 @@ class DuenoLocalController extends Controller
     }
 
 
+    // Crear un nuevo DuenoLocal esta en la parte de autenticacion
+    public function store(Request $request)
+    {
+        // Verificar si los campos requeridos están presentes
+        if (!$request->has(['nombre', 'apellido', 'cedula', 'telefono', 'email', 'contrasena', 'creado_por'])) {
+            return response()->json(['message' => 'Faltan campos requeridos.'], 400);
+        }
 
+        // Validar el formato del email
+        if (!filter_var($request->email, FILTER_VALIDATE_EMAIL)) {
+            return response()->json(['message' => 'Formato de email inválido.'], 400);
+        }
 
-    // Crear un nuevo dueño local esta en la parte de autenticacion
-   
+        // Verificar si ya existe un DuenoLocal  con el mismo email o cédula
+        $duenoLocalExistente = DuenoLocal::where('cedula', $request->cedula)
+            ->orWhere('email', $request->email)
+            ->first();
 
+        if ($duenoLocalExistente) {
+            // Si existe, retornar un error 409 (conflict)
+            return response()->json([
+                'message' => 'El duenoLocal ya existe con esta cédula o email.'
+            ], 409);
+        }
 
+        try {
+            // Crear el nuevo duenoLocal en la base de datos
+            $duenoLocal = DuenoLocal::create([
+                'nombre' => $request->nombre,
+                'apellido' => $request->apellido,
+                'cedula' => $request->cedula,
+                'telefono' => $request->telefono,
+                'email' => $request->email,
+                'contrasena' => Hash::make($request->contrasena), // Encriptar la contraseña
+                'estado' => 'activo', // Agregar el estado por defecto
+                'creado_por' => $request->creado_por,
+                
+            ]);
+
+        } catch (\Exception $e) {
+            // Manejar cualquier excepción que ocurra al crear el duenoLocal 
+            return response()->json(['message' => 'Error al registrar el duenoLocal.'], 500);
+        }
+        
+
+        // Retornar una respuesta exitosa
+        return response()->json([
+            'message' => 'duenoLocal registrado exitosamente',
+            'DuenoLocal' => $duenoLocal
+        ], 201);
+    }
 
     // Actualizar un dueño local existente
     public function update(Request $request, string $id)
@@ -66,12 +112,6 @@ class DuenoLocalController extends Controller
             return response()->json(['message' => 'dueño Local no activo'], 403); // 403 Forbidden
         }
 
-        // Buscar el usuario relacionado por el email del dueño del local
-        $user = User::where('email', $duenoLocal->email)->first();
-
-        if (!$user || $user->estado !== 'activo') {
-            return response()->json(['message' => 'dueño Local  no activo o no encontrado'], 403); // 403 Forbidden
-        }
 
         $request->validate([
             'nombre' => 'sometimes|string|max:255',
@@ -88,15 +128,6 @@ class DuenoLocalController extends Controller
         // Actualizar el dueño local sin la contraseña
         $duenoLocal->update($dataToUpdate);
 
-
-        if ($user) {
-            // Actualizar el usuario con los nuevos datos del duenoLocal
-            $user->name = $request->input('nombre', $duenoLocal->nombre) . ' ' . $request->input('apellido', $duenoLocal->apellido);
-            $user->email = $request->input('email', $duenoLocal->email);
-
-            // No actualizar la contraseña aquí, ya que se manejará en otra API
-            $user->save(); // Guardar los cambios en el usuario
-        }
 
         // Retornar una respuesta exitosa
         return response()->json([
@@ -115,7 +146,7 @@ class DuenoLocalController extends Controller
         }
 
         if ($duenoLocal->estado !== 'activo') {
-            return response()->json(['message' => 'Dueño Local no encontrado'], 403); // 403 Forbidden
+            return response()->json(['message' => 'Dueño Local ya eliminado'], 403); // 403 Forbidden
         }
 
         // Cambiar el estado a inactivo

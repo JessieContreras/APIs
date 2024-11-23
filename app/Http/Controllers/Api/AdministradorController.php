@@ -117,11 +117,29 @@ class AdministradorController extends Controller
         }
 
         if ($administrador->estado !== 'activo') {
-            return response()->json(['message' => 'Administrador no encontrado'], 403); // 403 Forbidden
+            return response()->json(['message' => 'El Administrador ya se encuentra Inactivo'], 403); // 403 Forbidden
         }
+
+        // Buscar el usuario relacionado por el email del administrador
+        $user = User::where('email', $administrador->email)->first();
+        if (!$user) {
+            return response()->json(['message' => 'El Usuario del Administrador no encontrado'], 404); // 
+        }
+        if ($user->estado !== 'activo') {
+            return response()->json(['message' => 'El Administrador ya se encuentra Inactivo'], 403); 
+        }
+
+        if ($user) {
+            // Cambiar el estado a inactivo
+            $user->estado = 'inactivo';
+            // No actualizar la contraseña aquí, ya que se manejará en otra API
+            $user->save(); // Guardar los cambios en el usuario
+        }
+
 
         // Cambiar el estado a inactivo
         $administrador->estado = 'inactivo'; 
+        // No actualizar la contraseña aquí, ya que se manejará en otra API
         $administrador->save(); 
 
         return response()->json(['message' => 'Administrador eliminado con éxito']);

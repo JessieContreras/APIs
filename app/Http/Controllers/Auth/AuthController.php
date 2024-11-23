@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 //modelos
 use App\Models\User;
 use App\Models\Administrador;
-use App\Models\DuenoLocal;
+use App\Models\Asistente;
 //
 use Illuminate\Support\Facades\Hash; // Para encriptar contraseñas
 use Illuminate\Validation\ValidationException; // Para el manejo de excepciones
@@ -82,70 +82,7 @@ class AuthController extends Controller
         ], 201);
     }
 
-    public function registrarDuenoLocal(Request $request)
-    {
-        // Verificar si los campos requeridos están presentes
-        if (!$request->has(['nombre', 'apellido', 'cedula', 'telefono', 'email', 'contrasena', 'creado_por'])) {
-            return response()->json(['message' => 'Faltan campos requeridos.'], 400);
-        }
-
-        // Validar el formato del email
-        if (!filter_var($request->email, FILTER_VALIDATE_EMAIL)) {
-            return response()->json(['message' => 'Formato de email inválido.'], 400);
-        }
-
-        // Verificar si ya existe un dueño local con el mismo email o cédula
-        $duenoExistente = DuenoLocal::where('cedula', $request->cedula)
-            ->orWhere('email', $request->email)
-            ->first();
-
-        if ($duenoExistente) {
-            // Si existe, retornar un error 409 (conflict)
-            return response()->json([
-                'message' => 'El dueño de local ya existe con esta cédula o email.'
-            ], 409);
-        }
-
-        try {
-            // Crear el nuevo dueño local en la base de datos
-            $duenoLocal = DuenoLocal::create([
-                'nombre' => $request->nombre,
-                'apellido' => $request->apellido,
-                'cedula' => $request->cedula,
-                'telefono' => $request->telefono,
-                'email' => $request->email,
-                'contrasena' => Hash::make($request->contrasena), // Encriptar la contraseña
-                'estado' => 'activo', // Agregar el estado por defecto
-                'creado_por' => $request->creado_por,
-                
-            ]);
-
-            // Crear el nuevo usuario en la base de datos
-            $user = User::create([
-                'name' => $request->nombre . ' ' . $request->apellido, // Concatenar nombre y apellido
-                'email' => $request->email,
-                'password' => Hash::make($request->contrasena), // Encriptar la contraseña
-                'estado' => 'activo', // Agregar el estado por defecto
-                'tipo' => 'duenoLocal', // Para saber que el usuario es de tipo dueño local
-            ]);
-
-        } catch (\Exception $e) {
-            // Manejar cualquier excepción que ocurra al crear el dueño local
-            return response()->json(['message' => 'Error al registrar el dueño de local.'], 500);
-        }
-
-        // Generar el token JWT
-        $token = JWTAuth::fromUser($user);
-        
-
-        // Retornar una respuesta exitosa
-        return response()->json([
-            'message' => 'Dueño de local registrado exitosamente',
-            'DuenoLocal' => $duenoLocal,
-            'user' => $user,
-            'token' => $token
-        ], 201);
-    }
+    
 
     public function login(Request $request)
     {

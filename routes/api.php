@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\JWTMiddleware;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Api\AdministradorController;
+use App\Http\Controllers\Api\AsistenteController;
 use App\Http\Controllers\Api\DuenoLocalController;
 use App\Http\Controllers\Api\EstadoViaController; 
 use App\Http\Controllers\Api\EtiquetaTuristicaController; 
@@ -17,12 +18,11 @@ use App\Http\Controllers\Api\PrecioLocalController;
 use App\Http\Controllers\Api\PuntoTuristicoController;
 
 Route::post('login', [AuthController::class,'login']);
+Route::post('activarAdmin/{id}', [AuthController::class, 'activarAdmin']);
+Route::post('registrarAdministrador', [AuthController::class,'registrarAdministrador']);
 
 Route::middleware([JWTMiddleware::class])->group(function () {
-        
-    Route::post('activarAdmin/{id}', [AuthController::class, 'activarAdmin']);
-    Route::post('registrarAdministrador', [AuthController::class,'registrarAdministrador']);
-    Route::post('registrarDuenoLocal', [AuthController::class,'registrarDuenoLocal']); 
+         
     Route::prefix('administradores')->group(function () {
         Route::get('/', [AdministradorController::class, 'index']); 
         Route::get('/activos', [AdministradorController::class, 'indexActivos']); 
@@ -32,15 +32,27 @@ Route::middleware([JWTMiddleware::class])->group(function () {
         Route::delete('/{id}', [AdministradorController::class, 'destroy']); 
     });
 
-    Route::prefix('duenosLocales')->group(function () {
+    Route::prefix('asistente')->group(function () {
+        Route::get('/', [AsistenteController::class, 'index']); 
+        Route::get('/activos', [AsistenteController::class, 'indexActivos']); 
+        Route::get('/{id}', [AsistenteController::class, 'show']); 
+        Route::get('/activos/{id}', [AsistenteController::class, 'showActivo']); 
+        Route::post('/', [AsistenteController::class,'registrarAsistente']);
+        Route::put('/{id}', [AsistenteController::class, 'update']); 
+        Route::delete('/{id}', [AsistenteController::class, 'destroy']);
+    });
+
+    Route::prefix('duenoLocal')->group(function () {
         Route::get('/', [DuenoLocalController::class, 'index']); 
         Route::get('/activos', [DuenoLocalController::class, 'indexActivos']); 
         Route::get('/{id}', [DuenoLocalController::class, 'show']); 
         Route::get('/activos/{id}', [DuenoLocalController::class, 'showActivo']); 
+        Route::post('/', [DuenoLocalController::class,'store']);
         Route::put('/{id}', [DuenoLocalController::class, 'update']); 
         Route::delete('/{id}', [DuenoLocalController::class, 'destroy']);
     });
 
+    /*
     Route::prefix('estadoVias')->group(function () {
         Route::get('/', [EstadoViaController::class, 'index']); 
         Route::get('/activos', [EstadoViaController::class, 'indexActivos']); 
@@ -50,6 +62,7 @@ Route::middleware([JWTMiddleware::class])->group(function () {
         Route::put('/{id}', [EstadoViaController::class, 'update']);
         Route::delete('/{id}', [EstadoViaController::class, 'destroy']); 
     });
+    */
 
     Route::prefix('etiquetasTuristicas')->group(function () {
         Route::get('/', [EtiquetaTuristicaController::class, 'index']); 
