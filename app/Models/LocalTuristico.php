@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class LocalTuristico extends Model
 {
     use HasFactory;
+
     protected $table = 'locales_turisticos';
 
     protected $fillable = [
@@ -17,6 +18,7 @@ class LocalTuristico extends Model
         'direccion',
         'latitud',
         'longitud',
+        'id_parroquia',
         'estado',
         'creado_por',
         'editado_por',
@@ -26,9 +28,10 @@ class LocalTuristico extends Model
 
     public $timestamps = false; // Usamos las columnas `fecha_creacion` y `fecha_ultima_edicion`
 
+    // Relación de muchos a muchos con EtiquetaTuristica
     public function etiquetas()
     {
-        return $this->belongsToMany(EtiquetaTuristica::class, 'local_etiqueta', 'id_local', 'id_etiqueta');
+        return $this->belongsToMany(EtiquetaTuristica::class, 'local_etiqueta', 'id_local', 'id_etiqueta')
+                    ->withPivot('estado');
     }
-
 }

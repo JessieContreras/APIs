@@ -79,38 +79,59 @@ class LocalEtiquetaController extends Controller
         return response()->json($localEtiqueta, 201);
     }
 
-    // Actualizar una localEtiqueta  existente
-    public function update(Request $request, $id)
+    // Actualizar una localEtiqueta existente
+    public function update(Request $request, $id_local, $id_etiqueta)
     {
-        $localEtiqueta = LocalEtiqueta::find($id);
+        // Buscar la relación localEtiqueta usando las claves compuestas
+        $localEtiqueta = LocalEtiqueta::where('id_local', $id_local)
+                                        ->where('id_etiqueta', $id_etiqueta)
+                                        ->first();
 
+        // Si no se encuentra la relación, devolver error
         if (!$localEtiqueta) {
             return response()->json(['message' => 'Local Etiqueta no encontrada'], 404);
         }
 
-        // Verificar si la etiqueta ya fue eliminado (estadp = 'inactivo')
+        // Verificar si la relación está inactiva
         if ($localEtiqueta->estado === 'inactivo') {
             return response()->json([
-                'message' => 'Local Etiqueta  está inactiva y no se puede actualizar.'
+                'message' => 'Local Etiqueta está inactiva y no se puede actualizar.'
             ], 409);
         }
 
+        // Validar los datos recibidos en la solicitud
         $validatedData = $request->validate([
-            'id_local' => 'required|string',
-            'id_etiqueta' => 'required|string',
+            'id_etiqueta' => 'nullable|string', // Permitir cambiar el id_etiqueta si es necesario
             'editado_por' => 'required|string|max:255',
         ]);
 
-        $localEtiqueta->update($validatedData);
+        // Si se ha enviado un nuevo id_etiqueta, actualizarlo
+        if ($request->has('id_etiqueta')) {
+            $localEtiqueta->id_etiqueta = $validatedData['id_etiqueta'];
+        }
 
+        // Actualizar el resto de campos
+        $localEtiqueta->editado_por = $validatedData['editado_por'];
+
+        // Guardar los cambios
+        $localEtiqueta->save();
+
+        // Retornar la respuesta exitosa
         return response()->json($localEtiqueta, 200);
     }
 
-    // Eliminar una localEtiqueta 
-    public function destroy($id)
-    {
-        $localEtiqueta = LocalEtiqueta::find($id);
 
+
+
+    // Eliminar una localEtiqueta 
+    public function destroy($id_local, $id_etiqueta)
+    {
+        // Buscar la relación localEtiqueta usando las claves compuestas
+        $localEtiqueta = LocalEtiqueta::where('id_local', $id_local)
+                                    ->where('id_etiqueta', $id_etiqueta)
+                                    ->first();
+
+        // Verificar si la relación existe
         if (!$localEtiqueta) {
             return response()->json(['message' => 'Local Etiqueta no encontrada'], 404);
         }
@@ -120,11 +141,11 @@ class LocalEtiquetaController extends Controller
             return response()->json(['message' => 'Este Local Etiqueta ya ha sido eliminada'], 409); // 409 Conflict
         }
 
-        // Cambiar el estado a eliminado
-        $localEtiqueta->estado = 'inactivo'; 
-        $localEtiqueta->save(); 
+        // Cambiar el estado a inactivo
+        $localEtiqueta->estado = 'inactivo';
+        $localEtiqueta->save();
 
         return response()->json(['message' => 'Local Etiqueta eliminada con éxito'], 200);
-
     }
+
 }

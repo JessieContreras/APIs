@@ -49,6 +49,7 @@ class ParroquiaController extends Controller
             'fecha_fundacion' => 'required|string|max:255',
             'poblacion' => 'required|string|max:255',
             'temperatura_promedio' => 'required|string|max:255',
+            'descripcion' => 'nullable|string',
             'creado_por' => 'required|string|max:255',
         ]);
 
@@ -90,6 +91,7 @@ class ParroquiaController extends Controller
             'fecha_fundacion' => 'required|string|max:255',
             'poblacion' => 'required|string|max:255',
             'temperatura_promedio' => 'required|string|max:255',
+            'descripcion' => 'nullable|string',
             'editado_por' => 'required|string|max:255',
         ]);
 

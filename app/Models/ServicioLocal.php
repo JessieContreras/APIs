@@ -5,17 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Parroquia extends Model
+class ServicioLocal extends Model
 {
     use HasFactory;
-    protected $table = 'parroquias';
+
+    protected $table = 'servicios_locales';
 
     protected $fillable = [
-        'nombre',
-        'fecha_fundacion',
-        'poblacion',
-        'temperatura_promedio',
-        'descripcion',
+        'id_local',
+        'servicio',
+        'precio',
+        'tipo',
         'estado',
         'creado_por',
         'editado_por',
@@ -23,5 +23,5 @@ class Parroquia extends Model
         'fecha_ultima_edicion',
     ];
 
-    public $timestamps = false; // Usamos las columnas `fecha_creacion` y `fecha_ultima_edicion`
+    public $timestamps = false; // Usamos `fecha_creacion` y `fecha_ultima_edicion` en lugar de timestamps predeterminados de Laravel
 }

@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Models\LocalTuristico;
 use App\Models\DuenoLocal;
 use App\Models\HorarioAtencion;
-use App\Models\PrecioLocal;
+use App\Models\ServicioLocal;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
@@ -53,6 +53,7 @@ class LocalTuristicoController extends Controller
             'direccion' => 'required|string|max:255',
             'latitud' => 'required|numeric',
             'longitud' => 'required|numeric',
+            'id_parroquia' => 'required|integer|exists:parroquias,id', 
             'creado_por' => 'required|string|max:255',
         ]);
 
@@ -85,6 +86,7 @@ class LocalTuristicoController extends Controller
     }
 
 
+
     // Actualizar un local turístico existente
     public function update(Request $request, $id)
     {
@@ -111,6 +113,7 @@ class LocalTuristicoController extends Controller
             'direccion' => 'sometimes|string|max:255',
             'latitud' => 'sometimes|numeric',
             'longitud' => 'sometimes|numeric',
+            'id_parroquia' => 'sometimes|integer|exists:parroquias,id', // Validar si la parroquia existe
             'editado_por' => 'required|string|max:255',
         ]);
 
@@ -147,6 +150,7 @@ class LocalTuristicoController extends Controller
         // Retornar el local turístico actualizado
         return response()->json($localTuristico, 200);
     }
+
 
 
     // Eliminar (cambiar a inactivo) un local turístico
@@ -195,8 +199,8 @@ class LocalTuristicoController extends Controller
             ->where('estado', 'activo')
             ->get();
 
-        // Obtener los PrecioLocal
-        $precioLocal = PrecioLocal::select('servicio', 'precio')
+        // Obtener los ServicioLocal
+        $servicioLocal = ServicioLocal::select('servicio', 'precio','tipo')
             ->where('id_local', $localTuristico->id)
             ->where('estado', 'activo')
             ->get();
@@ -206,9 +210,27 @@ class LocalTuristicoController extends Controller
             'Local' => $localTuristico,
             'Propietario' => $nombreDueno,
             'Horarios' => $horarioAtencion,
-            'Servicios' => $precioLocal
+            'Servicios' => $servicioLocal
         ], 200);
     }
+
+    public function buscarPorEtiqueta($id_etiqueta)
+    {
+        // Obtener todos los locales turísticos que tienen la etiqueta especificada
+        $localesTuristicos = LocalTuristico::whereHas('etiquetas', function ($query) use ($id_etiqueta) {
+            $query->where('etiquetas_turisticas.id', $id_etiqueta);
+        })->get();
+
+        // Verificar si se encontraron locales turísticos
+        if ($localesTuristicos->isEmpty()) {
+            return response()->json(['message' => 'No se encontraron locales turísticos para esta etiqueta'], 404);
+        }
+
+        // Retornar los locales turísticos encontrados
+        return response()->json($localesTuristicos, 200);
+    }
+
+
 
 
 }

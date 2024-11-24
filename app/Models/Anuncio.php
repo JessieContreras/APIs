@@ -5,16 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Parroquia extends Model
+class Anuncio extends Model
 {
     use HasFactory;
-    protected $table = 'parroquias';
+
+    protected $table = 'anuncios';
 
     protected $fillable = [
         'nombre',
-        'fecha_fundacion',
-        'poblacion',
-        'temperatura_promedio',
         'descripcion',
         'estado',
         'creado_por',
@@ -23,5 +21,5 @@ class Parroquia extends Model
         'fecha_ultima_edicion',
     ];
 
-    public $timestamps = false; // Usamos las columnas `fecha_creacion` y `fecha_ultima_edicion`
+    public $timestamps = false; // Usamos `fecha_creacion` y `fecha_ultima_edicion` en lugar de los timestamps predeterminados.
 }

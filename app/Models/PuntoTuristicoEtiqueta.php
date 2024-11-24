@@ -5,21 +5,20 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class PrecioLocal extends Model
+class PuntoTuristicoEtiqueta extends Model
 {
     use HasFactory;
-    protected $table = 'precios_locales';
+    protected $table = 'puntos_turisticos_etiqueta';
 
     protected $fillable = [
-        'id_local',
-        'servicio',
-        'precio',
+        'id_punto_turistico',
+        'id_etiqueta',
+        'estado',
         'creado_por',
         'editado_por',
-        'estado',
         'fecha_creacion',
         'fecha_ultima_edicion',
     ];
 
-    public $timestamps = false; // Usamos las columnas `fecha_creacion` y `fecha_ultima_edicion`
+    public $timestamps = false; // Se utilizan `fecha_creacion` y `fecha_ultima_edicion` en lugar de `timestamps`
 }

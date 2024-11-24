@@ -29,10 +29,13 @@ class EtiquetaTuristica extends Model
     // Especificar los nombres de las columnas para las marcas de tiempo personalizadas.
     const CREATED_AT = 'fecha_creacion';
     const UPDATED_AT = 'fecha_ultima_edicion';
-
+    
+    // Relación con los locales turísticos
     public function locales()
     {
-        return $this->belongsToMany(LocalTuristico::class, 'local_etiqueta', 'id_etiqueta', 'id_local');
+        return $this->belongsToMany(LocalTuristico::class, 'local_etiqueta', 'id_etiqueta', 'id_local')
+                    ->withPivot('estado');
     }
+    
 
 }

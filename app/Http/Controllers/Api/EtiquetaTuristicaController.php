@@ -130,4 +130,8 @@ class EtiquetaTuristicaController extends Controller
 
         
     }
+
+    
+
+
 }
