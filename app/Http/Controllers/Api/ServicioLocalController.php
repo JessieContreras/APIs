@@ -10,7 +10,11 @@ class ServicioLocalController extends Controller
 {
     public function index()
     {
-        return ServicioLocal::all();
+        $servicioLocal = ServicioLocal::all();
+        return response()->json([
+            'cantidad' => $servicioLocal->count(),
+            'datos' => $servicioLocal
+        ], 200);
     }
 
     public function show($id)
@@ -26,7 +30,11 @@ class ServicioLocalController extends Controller
 
     public function indexActivos()
     {
-        return response()->json(ServicioLocal::where('estado', 'activo')->get(), 200);
+        $activos = ServicioLocal::where('estado', 'activo')->get();
+        return response()->json([
+            'cantidad' => $activos->count(),
+            'datos' => $activos
+        ], 200);
     }
 
     public function showActivo(string $id)

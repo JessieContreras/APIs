@@ -14,6 +14,8 @@ use Illuminate\Validation\ValidationException; // Para el manejo de excepciones
 use Illuminate\Foundation\Validation\ValidatesRequests; // Importar el trait
 use Tymon\JWTAuth\Facades\JWTAuth;
 
+
+
 class AuthController extends Controller
 {
     public function registrarAdministrador(Request $request)
@@ -90,57 +92,93 @@ class AuthController extends Controller
         if (!$request->has(['email', 'password'])) {
             return response()->json(['message' => 'Faltan campos requeridos.'], 400);
         }
-    
+
         $credenciales = $request->only('email', 'password');
-        
+
         try {
+            // Validar credenciales y obtener el usuario autenticado
             if (!$token = JWTAuth::attempt($credenciales)) {
                 return response()->json([
-                    'error' => 'Credenciales Invalidas'
+                    'error' => 'Credenciales inválidas'
                 ], 400);
             }
-    
-            // Obtener el usuario autenticado
+
             $user = auth()->user();
-    
+
             // Validar que el usuario esté activo
             if ($user->estado !== 'activo') {
                 return response()->json([
                     'error' => 'El usuario no está activo.'
                 ], 403);
             }
-        } catch (JWTException $e) {
+
+            // Añadir el tipo de usuario al payload del token
+            $customPayload = [
+                'sub' => $user->id, // ID del usuario
+                'email' => $user->email, // Email
+                'tipo' => $user->tipo, // Tipo de usuario
+            ];
+
+            // Generar el token con el payload personalizado
+            $token = JWTAuth::claims($customPayload)->attempt($credenciales);
+
+        } catch (\Tymon\JWTAuth\Exceptions\JWTException $e) {
             return response()->json([
-                'error' => 'Token no creado'
+                'error' => 'No se pudo crear el token.'
             ], 500);
         }
-    
-        // Retornar el token y el tipo de usuario
+
+        // Retornar el token
         return response()->json([
-            'token' => $token,
-            'tipo' => $user->tipo // Solo enviamos el tipo de usuario
+            'token' => $token
         ]);
     }
-    
 
-    public function activarAdmin(string $id)
+    public function logout(Request $request)
     {
-        $administrador = Administrador::find($id);
-
-        if (!$administrador) {
-            return response()->json(['message' => 'Administrador no encontrado'], 404);
+        try {
+            // Invalidar el token actual
+            JWTAuth::invalidate(JWTAuth::getToken());
+            
+            return response()->json([
+                'message' => 'Sesión cerrada exitosamente.'
+            ], 200);
+        } catch (\Tymon\JWTAuth\Exceptions\JWTException $e) {
+            return response()->json([
+                'error' => 'Error al cerrar sesión. Intenta de nuevo más tarde.'
+            ], 500);
         }
-
-        if ($administrador->estado !== 'inactivo') {
-            return response()->json(['message' => 'El Administrador ya se encuentra activo'], 403); // 403 Forbidden
-        }
-
-        // Cambiar el estado a activo
-        $administrador->estado = 'activo'; 
-        $administrador->save(); 
-
-        return response()->json(['message' => 'Administrador activado con éxito']);
     }
 
+
+    public function descomprimirToken(Request $request)
+    {
+               
+        try {
+            // Obtener el token desde el cuerpo de la solicitud
+            $token = $request->input('token'); // Asegúrate de que el campo en el JSON se llame "token"
+            
+            if (!$token) {
+                return response()->json(['error' => 'Token no proporcionado'], 400);
+            }
+    
+            // Decodificar el token para extraer su payload
+            $payload = JWTAuth::setToken($token)->getPayload()->toArray();
+    
+            return response()->json([
+                'message' => 'Token decodificado correctamente',
+                'payload' => $payload
+            ], 200);
+        } catch (\Tymon\JWTAuth\Exceptions\TokenInvalidException $e) {
+            return response()->json(['error' => 'Token inválido'], 401);
+        } catch (\Tymon\JWTAuth\Exceptions\TokenExpiredException $e) {
+            return response()->json(['error' => 'Token expirado'], 401);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Error al decodificar el token'], 500);
+        }
+    }
+    
+
+    
 
 }

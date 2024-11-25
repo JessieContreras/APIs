@@ -14,24 +14,29 @@ class PuntoTuristicoController extends Controller
     public function index()
     {
         $puntosTuristicos = PuntoTuristico::with('parroquia')->get();
-
-        return response()->json($puntosTuristicos->map(function ($punto) {
-            return [
-                'id' => $punto->id,
-                'nombre' => $punto->nombre,
-                'descripcion' => $punto->descripcion,
-                'latitud' => $punto->latitud,
-                'longitud' => $punto->longitud,
-                'id_parroquia' => $punto->id_parroquia,
-                'nombre_parroquia' => $punto->parroquia->nombre ?? null,
-                'estado' => $punto->estado,
-                'creado_por' => $punto->creado_por,
-                'editado_por' => $punto->editado_por,
-                'fecha_creacion' => $punto->fecha_creacion,
-                'fecha_ultima_edicion' => $punto->fecha_ultima_edicion,
-            ];
-        }));
+    
+        return response()->json([
+            'cantidad' => $puntosTuristicos->count(),
+            'datos' => $puntosTuristicos
+            /*->map(function ($punto) {
+                return [
+                    'id' => $punto->id,
+                    'nombre' => $punto->nombre,
+                    'descripcion' => $punto->descripcion,
+                    'latitud' => $punto->latitud,
+                    'longitud' => $punto->longitud,
+                    'id_parroquia' => $punto->id_parroquia,
+                    'nombre_parroquia' => $punto->parroquia->nombre ?? null,
+                    'estado' => $punto->estado,
+                    'creado_por' => $punto->creado_por,
+                    'editado_por' => $punto->editado_por,
+                    'fecha_creacion' => $punto->fecha_creacion,
+                    'fecha_ultima_edicion' => $punto->fecha_ultima_edicion,
+                ];
+            })*/
+        ]);
     }
+    
 
     // Mostrar un punto turístico por ID
     public function show($id)

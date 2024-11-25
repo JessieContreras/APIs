@@ -11,7 +11,11 @@ class EstadoViaController extends Controller
     // Listar todos los estados de vías
     public function index()
     {
-        return EstadoVia::all();
+        $estadoVia = EstadoVia::all();
+        return response()->json([
+            'cantidad' => $estadoVia->count(),
+            'datos' => $estadoVia
+        ], 200);
     }
 
     // Mostrar un estado de vía específico
@@ -29,7 +33,11 @@ class EstadoViaController extends Controller
     // Mostrar todas las vias no eliminadas
     public function indexActivos()
     {
-        return EstadoVia::where('Eliminado', 'no')->get(); // Filtra solo las vias no eliminadas
+        $activos = EstadoVia::where('estado', 'activo')->get();
+        return response()->json([
+            'cantidad' => $activos->count(),
+            'datos' => $activos
+        ], 200);
     }
 
     // Buscar un Estado Via por ID solo si está activo

@@ -11,7 +11,11 @@ class ParroquiaController extends Controller
 {
     public function index()
     {
-        return Parroquia::all();
+        $parroquia = Parroquia::all();
+        return response()->json([
+            'cantidad' => $parroquia->count(),
+            'datos' => $parroquia
+        ], 200);
     }
 
     public function show($id)
@@ -27,7 +31,11 @@ class ParroquiaController extends Controller
 
     public function indexActivos()
     {
-        return response()->json(Parroquia::where('estado', 'activo')->get(), 200);
+        $activos = Parroquia::where('estado', 'activo')->get();
+        return response()->json([
+            'cantidad' => $activos->count(),
+            'datos' => $activos
+        ], 200);
     }
 
     public function showActivo(string $id)

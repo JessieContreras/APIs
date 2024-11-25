@@ -11,7 +11,11 @@ class AdministradorController extends Controller
     // Mostrar todos los Administradores (activos e inactivos)
     public function index()
     {
-        return Administrador::all(); // Devuelve todos los administradores sin importar el estado
+        $administrador = Administrador::all(); 
+        return response()->json([
+            'cantidad' => $administrador->count(),
+            'datos' => $administrador
+        ], 200);
     }
 
     // Buscar un Administrador por ID sin importar el estado
@@ -29,7 +33,11 @@ class AdministradorController extends Controller
     // Mostrar todos los Administradores activos
     public function indexActivos()
     {
-        return Administrador::where('estado', 'activo')->get(); // Filtra solo los administradores activos
+        $activos = Administrador::where('estado', 'activo')->get();
+        return response()->json([
+            'cantidad' => $activos->count(),
+            'datos' => $activos
+        ], 200);
     }
 
     // Buscar un Administrador por ID solo si está activo
@@ -143,6 +151,25 @@ class AdministradorController extends Controller
         $administrador->save(); 
 
         return response()->json(['message' => 'Administrador eliminado con éxito']);
+    }
+
+    public function activarAdmin(string $id)
+    {
+        $administrador = Administrador::find($id);
+
+        if (!$administrador) {
+            return response()->json(['message' => 'Administrador no encontrado'], 404);
+        }
+
+        if ($administrador->estado !== 'inactivo') {
+            return response()->json(['message' => 'El Administrador ya se encuentra activo'], 403); // 403 Forbidden
+        }
+
+        // Cambiar el estado a activo
+        $administrador->estado = 'activo'; 
+        $administrador->save(); 
+
+        return response()->json(['message' => 'Administrador activado con éxito']);
     }
 
 }

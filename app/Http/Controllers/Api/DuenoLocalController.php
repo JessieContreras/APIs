@@ -13,7 +13,11 @@ class DuenoLocalController extends Controller
     // Listar todos los dueños locales
     public function index()
     {
-        return DuenoLocal::all();
+        $duenoLocal = DuenoLocal::all();
+        return response()->json([
+            'cantidad' => $duenoLocal->count(),
+            'datos' => $duenoLocal
+        ], 200);
     }
 
     // Mostrar un dueño local específico
@@ -31,7 +35,11 @@ class DuenoLocalController extends Controller
     // Mostrar todos los Administradores activos
     public function indexActivos()
     {
-        return DuenoLocal::where('estado', 'activo')->get(); // Filtra solo los dueños de los locales activos
+        $activos = DuenoLocal::where('estado', 'activo')->get();
+        return response()->json([
+            'cantidad' => $activos->count(),
+            'datos' => $activos
+        ], 200);
     }
 
     // Buscar un Dueño Local por ID solo si está activo

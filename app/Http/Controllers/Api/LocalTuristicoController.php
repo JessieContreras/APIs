@@ -13,7 +13,11 @@ class LocalTuristicoController extends Controller
 {
     public function index()
     {
-        return LocalTuristico::all();
+        $localTuristico = LocalTuristico::all();
+        return response()->json([
+            'cantidad' => $localTuristico->count(),
+            'datos' => $localTuristico
+        ], 200);
     }
 
     public function show($id)
@@ -29,7 +33,11 @@ class LocalTuristicoController extends Controller
 
     public function indexActivos()
     {
-        return response()->json(LocalTuristico::where('estado', 'activo')->get(), 200);
+        $activos = LocalTuristico::where('estado', 'activo')->get();
+        return response()->json([
+            'cantidad' => $activos->count(),
+            'datos' => $activos
+        ], 200);
     }
 
     public function showActivo(string $id)

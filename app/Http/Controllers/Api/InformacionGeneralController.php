@@ -10,7 +10,11 @@ class InformacionGeneralController extends Controller
 {
     public function index()
     {
-        return InformacionGeneral::all();
+        $informacionGeneral = InformacionGeneral::all();
+        return response()->json([
+            'cantidad' => $informacionGeneral->count(),
+            'datos' => $informacionGeneral
+        ], 200);
     }
 
     public function show($id)
@@ -26,7 +30,11 @@ class InformacionGeneralController extends Controller
 
     public function indexActivos()
     {
-        return response()->json(InformacionGeneral::where('estado', 'activo')->get(), 200);
+        $activos = InformacionGeneral::where('estado', 'activo')->get();
+        return response()->json([
+            'cantidad' => $activos->count(),
+            'datos' => $activos
+        ], 200);
     }
 
     // Buscar una informacionGeneral por ID solo si está activo

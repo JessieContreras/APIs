@@ -13,7 +13,11 @@ class LocalEtiquetaController extends Controller
     // Listar toda la localEtiqueta 
     public function index()
     {
-        return LocalEtiqueta::all();
+        $localEtiqueta = LocalEtiqueta::all();
+        return response()->json([
+            'cantidad' => $localEtiqueta->count(),
+            'datos' => $localEtiqueta
+        ], 200);
     }
 
     // Mostrar una localEtiqueta  específica
@@ -38,7 +42,11 @@ class LocalEtiquetaController extends Controller
     // Mostrar todos los LocalEtiqueta activos
     public function indexActivos()
     {
-        return response()->json(LocalEtiqueta::where('estado', 'activo')->get(), 200);
+        $activos = LocalEtiqueta::where('estado', 'activo')->get();
+        return response()->json([
+            'cantidad' => $activos->count(),
+            'datos' => $activos
+        ], 200);
     }
 
     // Buscar una localEtiqueta por ID solo si está activo

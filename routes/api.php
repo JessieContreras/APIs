@@ -20,10 +20,13 @@ use App\Http\Controllers\Api\PuntoTuristicoEtiquetaController;
 use App\Http\Controllers\AnuncioController;
 
 Route::post('login', [AuthController::class,'login']);
-Route::post('activarAdmin/{id}', [AuthController::class, 'activarAdmin']);
 Route::post('registrarAdministrador', [AuthController::class,'registrarAdministrador']);
 
 Route::middleware([JWTMiddleware::class])->group(function () {
+
+    
+    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::post('/decode-token', [AuthController::class, 'descomprimirToken']);
          
     Route::prefix('administradores')->group(function () {
         Route::get('/', [AdministradorController::class, 'index']); 
@@ -32,6 +35,7 @@ Route::middleware([JWTMiddleware::class])->group(function () {
         Route::get('/activos/{id}', [AdministradorController::class, 'showActivo']); 
         Route::put('/{id}', [AdministradorController::class, 'update']); 
         Route::delete('/{id}', [AdministradorController::class, 'destroy']); 
+        Route::post('/activarAdmin/{id}', [AdministradorController::class, 'activarAdmin']);  
     });
 
     Route::prefix('asistente')->group(function () {

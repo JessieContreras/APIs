@@ -12,10 +12,13 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AsistenteController extends Controller
 {
-    // Listar todos los dueños locales
     public function index()
     {
-        return Asistente::all();
+        $asistentes = Asistente::all();
+        return response()->json([
+            'cantidad' => $asistentes->count(),
+            'datos' => $asistentes
+        ], 200);
     }
 
     // Mostrar un Asistente específico
@@ -33,7 +36,11 @@ class AsistenteController extends Controller
     // Mostrar todos los Administradores activos
     public function indexActivos()
     {
-        return Asistente::where('estado', 'activo')->get(); // Filtra solo los dueños de los locales activos
+        $activos = Asistente::where('estado', 'activo')->get();
+        return response()->json([
+            'cantidad' => $activos->count(),
+            'datos' => $activos
+        ], 200);
     }
 
     // Buscar un Asistente por ID solo si está activo

@@ -11,7 +11,10 @@ class AnuncioController extends Controller
     public function index()
     {
         $anuncios = Anuncio::all();
-        return response()->json($anuncios, 200);
+        return response()->json([
+            'cantidad' => $anuncios->count(),
+            'datos' => $anuncios
+        ], 200);
     }
 
     // Mostrar un anuncio específico
@@ -27,10 +30,14 @@ class AnuncioController extends Controller
     }
 
      
-     public function indexActivos()
-     {
-         return Anuncio::where('estado', 'inactivo')->get(); 
-     }
+    public function indexActivos()
+    {
+        $activos = Anuncio::where('estado', 'activo')->get();
+        return response()->json([
+            'cantidad' => $activos->count(),
+            'datos' => $activos
+        ], 200);
+    }
  
      
      public function showActivo(string $id)

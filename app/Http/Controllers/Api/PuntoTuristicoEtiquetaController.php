@@ -13,7 +13,11 @@ class PuntoTuristicoEtiquetaController extends Controller
     // Listar todas las etiquetas asignadas a puntos turísticos
     public function index()
     {
-        return PuntoTuristicoEtiqueta::all();
+        $puntoTuristicoEtiqueta = PuntoTuristicoEtiqueta::all();
+        return response()->json([
+            'cantidad' => $puntoTuristicoEtiqueta->count(),
+            'datos' => $puntoTuristicoEtiqueta
+        ], 200);
     }
 
     // Mostrar una asignación específica
@@ -40,7 +44,11 @@ class PuntoTuristicoEtiquetaController extends Controller
     // Listar asignaciones activas
     public function indexActivos()
     {
-        return response()->json(PuntoTuristicoEtiqueta::where('estado', 'activo')->get(), 200);
+        $activos = PuntoTuristicoEtiqueta::where('estado', 'activo')->get();
+        return response()->json([
+            'cantidad' => $activos->count(),
+            'datos' => $activos
+        ], 200);
     }
 
     // Crear una nueva asignación
