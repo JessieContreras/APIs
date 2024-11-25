@@ -153,7 +153,7 @@ class AdministradorController extends Controller
         return response()->json(['message' => 'Administrador eliminado con éxito']);
     }
 
-    public function activarAdmin(string $id)
+    public function activar(string $id)
     {
         $administrador = Administrador::find($id);
 
@@ -165,9 +165,23 @@ class AdministradorController extends Controller
             return response()->json(['message' => 'El Administrador ya se encuentra activo'], 403); // 403 Forbidden
         }
 
-        // Cambiar el estado a activo
+        // Buscar el usuario relacionado por el email del administrador
+        $user = User::where('email', $administrador->email)->first();
+        if (!$user) {
+            return response()->json(['message' => 'El Usuario del Administrador no encontrado'], 404);
+        }
+
+        if ($user->estado !== 'inactivo') {
+            return response()->json(['message' => 'El Usuario del Administrador ya se encuentra activo'], 403); 
+        }
+
+        // Cambiar el estado del administrador a activo
         $administrador->estado = 'activo'; 
-        $administrador->save(); 
+        $administrador->save();
+
+        // Cambiar el estado del usuario a activo
+        $user->estado = 'activo';
+        $user->save();
 
         return response()->json(['message' => 'Administrador activado con éxito']);
     }

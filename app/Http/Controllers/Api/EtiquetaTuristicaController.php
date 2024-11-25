@@ -135,8 +135,25 @@ class EtiquetaTuristicaController extends Controller
         $etiquetaTuristica->save(); 
 
         return response()->json(['message' => 'Etiqueta Turistica eliminada con éxito'], 200);
+    }
 
-        
+    public function activar(string $id)
+    {
+        $etiquetaTuristica = EtiquetaTuristica::find($id);
+
+        if (!$etiquetaTuristica) {
+            return response()->json(['message' => 'EtiquetaTuristica no encontrada'], 404);
+        }
+
+        if ($etiquetaTuristica->estado !== 'inactivo') {
+            return response()->json(['message' => 'La EtiquetaTuristica ya se encuentra activo'], 403); // 403 Forbidden
+        }
+
+        // Cambiar el estado a activo
+        $etiquetaTuristica->estado = 'activo'; 
+        $etiquetaTuristica->save(); 
+
+        return response()->json(['message' => 'EtiquetaTuristica activada con éxito']);
     }
 
     

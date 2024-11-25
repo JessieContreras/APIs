@@ -174,7 +174,7 @@ class AsistenteController extends Controller
         ], 201);
     }
 
-    // Eliminar un Asistente
+ 
     public function destroy($id)
     {
         $asistente = Asistente::find($id);
@@ -209,4 +209,38 @@ class AsistenteController extends Controller
 
         return response()->json(['message' => 'Asistente eliminado con éxito'], 200);
     }
+
+    public function activar(string $id)
+    {
+        $asistente = Asistente::find($id);
+
+        if (!$asistente) {
+            return response()->json(['message' => 'Asistente no encontrado'], 404);
+        }
+
+        if ($asistente->estado !== 'inactivo') {
+            return response()->json(['message' => 'El Asistente ya se encuentra activo'], 403); // 403 Forbidden
+        }
+
+        // Buscar el usuario relacionado por el email del asistente
+        $user = User::where('email', $asistente->email)->first();
+        if (!$user) {
+            return response()->json(['message' => 'El Usuario del Asistente no encontrado'], 404);
+        }
+
+        if ($user->estado !== 'inactivo') {
+            return response()->json(['message' => 'El Usuario del Asistente ya se encuentra activo'], 403); // 403 Forbidden
+        }
+
+        // Cambiar el estado del asistente a activo
+        $asistente->estado = 'activo'; 
+        $asistente->save();
+
+        // Cambiar el estado del usuario a activo
+        $user->estado = 'activo';
+        $user->save();
+
+        return response()->json(['message' => 'Asistente activado con éxito']);
+    }
+
 }

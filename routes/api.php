@@ -17,7 +17,7 @@ use App\Http\Controllers\Api\ParroquiaController;
 use App\Http\Controllers\Api\ServicioLocalController;
 use App\Http\Controllers\Api\PuntoTuristicoController;
 use App\Http\Controllers\Api\PuntoTuristicoEtiquetaController;
-use App\Http\Controllers\AnuncioController;
+use App\Http\Controllers\Api\AnuncioController;
 
 Route::post('login', [AuthController::class,'login']);
 Route::post('registrarAdministrador', [AuthController::class,'registrarAdministrador']);
@@ -35,7 +35,7 @@ Route::middleware([JWTMiddleware::class])->group(function () {
         Route::get('/activos/{id}', [AdministradorController::class, 'showActivo']); 
         Route::put('/{id}', [AdministradorController::class, 'update']); 
         Route::delete('/{id}', [AdministradorController::class, 'destroy']); 
-        Route::post('/activarAdmin/{id}', [AdministradorController::class, 'activarAdmin']);  
+        Route::post('/activar/{id}', [AdministradorController::class, 'activar']);  
     });
 
     Route::prefix('asistente')->group(function () {
@@ -46,6 +46,7 @@ Route::middleware([JWTMiddleware::class])->group(function () {
         Route::post('/', [AsistenteController::class,'registrarAsistente']);
         Route::put('/{id}', [AsistenteController::class, 'update']); 
         Route::delete('/{id}', [AsistenteController::class, 'destroy']);
+        Route::post('/activar/{id}', [AsistenteController::class, 'activar']); 
     });
 
     Route::prefix('duenoLocal')->group(function () {
@@ -56,6 +57,7 @@ Route::middleware([JWTMiddleware::class])->group(function () {
         Route::post('/', [DuenoLocalController::class,'store']);
         Route::put('/{id}', [DuenoLocalController::class, 'update']); 
         Route::delete('/{id}', [DuenoLocalController::class, 'destroy']);
+        Route::post('/activar/{id}', [DuenoLocalController::class, 'activar']); 
     });
 
     /*
@@ -67,6 +69,7 @@ Route::middleware([JWTMiddleware::class])->group(function () {
         Route::post('/', [EstadoViaController::class, 'store']); 
         Route::put('/{id}', [EstadoViaController::class, 'update']);
         Route::delete('/{id}', [EstadoViaController::class, 'destroy']); 
+        Route::post('/activar/{id}', [EstadoViaController::class, 'activar']); 
     });
     */
 
@@ -78,6 +81,7 @@ Route::middleware([JWTMiddleware::class])->group(function () {
         Route::post('/', [EtiquetaTuristicaController::class, 'store']);
         Route::put('/{id}', [EtiquetaTuristicaController::class, 'update']);
         Route::delete('/{id}', [EtiquetaTuristicaController::class, 'destroy']); 
+        Route::post('/activar/{id}', [EtiquetaTuristicaController::class, 'activar']); 
     });
 
     Route::prefix('horariosAtencion')->group(function () {
@@ -88,6 +92,7 @@ Route::middleware([JWTMiddleware::class])->group(function () {
         Route::post('/', [HorarioAtencionController::class, 'store']); 
         Route::put('/{id}', [HorarioAtencionController::class, 'update']); 
         Route::delete('/{id}', [HorarioAtencionController::class, 'destroy']); 
+        Route::post('/activar/{id}', [HorarioAtencionController::class, 'activar']); 
     });
 
     /*
@@ -99,6 +104,7 @@ Route::middleware([JWTMiddleware::class])->group(function () {
         Route::post('/', [InformacionGeneralController::class, 'store']); 
         Route::put('/{id}', [InformacionGeneralController::class, 'update']); 
         Route::delete('/{id}', [InformacionGeneralController::class, 'destroy']);
+        Route::post('/activar/{id}', [InformacionGeneralController::class, 'activar']); 
     });
     */
 
@@ -121,6 +127,7 @@ Route::middleware([JWTMiddleware::class])->group(function () {
         Route::post('/', [LocalTuristicoController::class, 'store']); 
         Route::put('/{id}', [LocalTuristicoController::class, 'update']); 
         Route::delete('/{id}', [LocalTuristicoController::class, 'destroy']); 
+        Route::post('/activar/{id}', [LocalTuristicoController::class, 'activar']); 
         Route::get('/mostrarDataLocal/{id}', [LocalTuristicoController::class, 'mostrarDataLocal']);
         Route::get('/buscarPorEtiqueta/{id_etiqueta}', [LocalTuristicoController::class, 'buscarPorEtiqueta']);
     });
@@ -133,6 +140,7 @@ Route::middleware([JWTMiddleware::class])->group(function () {
         Route::post('/', [ParroquiaController::class, 'store']); 
         Route::put('/{id}', [ParroquiaController::class, 'update']); 
         Route::delete('/{id}', [ParroquiaController::class, 'destroy']); 
+        Route::post('/activar/{id}', [ParroquiaController::class, 'activar']); 
         Route::get('/puntoTuristicoParroquia/{id}', [ParroquiaController::class, 'puntoTuristicoParroquia']); 
     });
 
@@ -144,6 +152,7 @@ Route::middleware([JWTMiddleware::class])->group(function () {
         Route::post('/', [ServicioLocalController::class, 'store']); 
         Route::put('/{id}', [ServicioLocalController::class, 'update']); 
         Route::delete('/{id}', [ServicioLocalController::class, 'destroy']); 
+        Route::post('/activar/{id}', [ServicioLocalController::class, 'activar']); 
     });
 
     Route::prefix('puntoTuristico')->group(function () {
@@ -154,6 +163,7 @@ Route::middleware([JWTMiddleware::class])->group(function () {
         Route::post('/', [PuntoTuristicoController::class, 'store']); 
         Route::put('/{id}', [PuntoTuristicoController::class, 'update']); 
         Route::delete('/{id}', [PuntoTuristicoController::class, 'destroy']);
+        Route::post('/activar/{id}', [PuntoTuristicoController::class, 'activar']);
         Route::get('/mostrarDataPuntoTuristico/{id}', [PuntoTuristicoController::class, 'mostrarDataPuntoTuristico']); 
         Route::get('/buscarPorEtiqueta/{id_etiqueta}', [PuntoTuristicoController::class, 'buscarPorEtiqueta']);
     });
@@ -170,11 +180,12 @@ Route::middleware([JWTMiddleware::class])->group(function () {
     
 
     Route::prefix('anuncios')->group(function () {
-        Route::get('/', [AnuncioController::class, 'index']); // Listar anuncios
-        Route::get('/{id}', [AnuncioController::class, 'show']); // Mostrar un anuncio
-        Route::post('/', [AnuncioController::class, 'store']); // Crear un anuncio
-        Route::put('/{id}', [AnuncioController::class, 'update']); // Actualizar un anuncio
-        Route::delete('/{id}', [AnuncioController::class, 'destroy']); // Desactivar un anuncio
+        Route::get('/', [AnuncioController::class, 'index']); 
+        Route::get('/{id}', [AnuncioController::class, 'show']); 
+        Route::post('/', [AnuncioController::class, 'store']); 
+        Route::put('/{id}', [AnuncioController::class, 'update']); 
+        Route::delete('/{id}', [AnuncioController::class, 'destroy']); 
+        Route::post('/activar/{id}', [AdministradorController::class, 'activar']);  
     });
 
 

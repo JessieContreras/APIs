@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
 use App\Models\Anuncio;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class AnuncioController extends Controller
 {
@@ -107,6 +108,25 @@ class AnuncioController extends Controller
         ]);
 
         return response()->json(['message' => 'Anuncio desactivado con éxito'], 200);
+    }
+
+    public function activar(string $id)
+    {
+        $anuncio = Anuncio::find($id);
+
+        if (!$anuncio) {
+            return response()->json(['message' => 'Anuncio no encontrado'], 404);
+        }
+
+        if ($anuncio->estado !== 'inactivo') {
+            return response()->json(['message' => 'El Anuncio ya se encuentra activo'], 403); // 403 Forbidden
+        }
+
+        // Cambiar el estado a activo
+        $anuncio->estado = 'activo'; 
+        $anuncio->save(); 
+
+        return response()->json(['message' => 'Anuncio activado con éxito']);
     }
 
     

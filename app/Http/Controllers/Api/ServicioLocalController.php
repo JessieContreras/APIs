@@ -126,4 +126,23 @@ class ServicioLocalController extends Controller
 
         return response()->json(['message' => 'ServicioLocal eliminado con éxito'], 200);
     }
+
+    public function activar(string $id)
+    {
+        $servicioLocal = ServicioLocal::find($id);
+
+        if (!$servicioLocal) {
+            return response()->json(['message' => 'ServicioLocal no encontrado'], 404);
+        }
+
+        if ($servicioLocal->estado !== 'inactivo') {
+            return response()->json(['message' => 'El ServicioLocal ya se encuentra activo'], 403); // 403 Forbidden
+        }
+
+        // Cambiar el estado a activo
+        $servicioLocal->estado = 'activo'; 
+        $servicioLocal->save(); 
+
+        return response()->json(['message' => 'ServicioLocal activado con éxito']);
+    }
 }

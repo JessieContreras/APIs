@@ -143,6 +143,25 @@ class ParroquiaController extends Controller
 
         return response()->json(['message' => 'Parroquia eliminada con éxito'], 200);
     }
+    
+    public function activar(string $id)
+    {
+        $parroquia = Parroquia::find($id);
+
+        if (!$parroquia) {
+            return response()->json(['message' => 'Parroquia no encontrada'], 404);
+        }
+
+        if ($parroquia->estado !== 'inactivo') {
+            return response()->json(['message' => 'La Parroquia ya se encuentra activa'], 403); // 403 Forbidden
+        }
+
+        // Cambiar el estado a activo
+        $parroquia->estado = 'activo'; 
+        $parroquia->save(); 
+
+        return response()->json(['message' => 'Parroquia activada con éxito']);
+    }
 
     public function puntoTuristicoParroquia(string $id)
     {

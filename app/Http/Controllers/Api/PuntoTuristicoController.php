@@ -50,6 +50,32 @@ class PuntoTuristicoController extends Controller
         return response()->json($puntoTuristico, 200);
     }
 
+    // Obtener todos los puntos turísticos activos
+    public function indexActivos()
+    {
+        $puntosActivos = PuntoTuristico::with('parroquia')->where('estado', 'activo')->get();
+
+        return response()->json([
+            'cantidad' => $puntosActivos->count(),
+            'datos' => $puntosActivos
+        ], 200);
+    }
+
+    // Mostrar un punto turístico activo por ID
+    public function showActivo(string $id)
+    {
+        $puntoTuristico = PuntoTuristico::with('parroquia')
+                                        ->where('id', $id)
+                                        ->where('estado', 'activo')
+                                        ->first();
+    
+        if (!$puntoTuristico) {
+            return response()->json(['message' => 'Punto turístico no encontrado o no está activo'], 404);
+        }
+    
+        return response()->json($puntoTuristico, 200);
+    }
+
     // Crear un nuevo punto turístico
     public function store(Request $request)
     {
@@ -121,6 +147,25 @@ class PuntoTuristicoController extends Controller
         $puntoTuristico->save();
 
         return response()->json(['message' => 'El punto turístico fue marcado como inactivo'], 200);
+    }
+
+    public function activar(string $id)
+    {
+        $puntoTuristico = PuntoTuristico::find($id);
+
+        if (!$puntoTuristico) {
+            return response()->json(['message' => 'PuntoTuristico no encontrado'], 404);
+        }
+
+        if ($puntoTuristico->estado !== 'inactivo') {
+            return response()->json(['message' => 'El PuntoTuristico ya se encuentra activo'], 403); // 403 Forbidden
+        }
+
+        // Cambiar el estado a activo
+        $puntoTuristico->estado = 'activo'; 
+        $puntoTuristico->save(); 
+
+        return response()->json(['message' => 'PuntoTuristico activado con éxito']);
     }
 
     public function mostrarDataPuntoTuristico($id)

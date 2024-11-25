@@ -163,4 +163,23 @@ class DuenoLocalController extends Controller
 
         return response()->json(['message' => 'Dueño local eliminado con éxito'], 200);
     }
+
+    public function activar(string $id)
+    {
+        $duenoLocal = DuenoLocal::find($id);
+
+        if (!$duenoLocal) {
+            return response()->json(['message' => 'DuenoLocal no encontrado'], 404);
+        }
+
+        if ($duenoLocal->estado !== 'inactivo') {
+            return response()->json(['message' => 'El DuenoLocal ya se encuentra activo'], 403); // 403 Forbidden
+        }
+
+        // Cambiar el estado a activo
+        $duenoLocal->estado = 'activo'; 
+        $duenoLocal->save(); 
+
+        return response()->json(['message' => 'DuenoLocal activado con éxito']);
+    }
 }

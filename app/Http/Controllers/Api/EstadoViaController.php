@@ -135,4 +135,23 @@ class EstadoViaController extends Controller
         return response()->json(['message' => 'Estado de vía eliminado con éxito'], 200);
     }
 
+    public function activar(string $id)
+    {
+        $estadoVia = EstadoVia::find($id);
+
+        if (!$estadoVia) {
+            return response()->json(['message' => 'EstadoVia no encontrado'], 404);
+        }
+
+        if ($estadoVia->estado !== 'inactivo') {
+            return response()->json(['message' => 'El EstadoVia ya se encuentra activo'], 403); // 403 Forbidden
+        }
+
+        // Cambiar el estado a activo
+        $estadoVia->estado = 'activo'; 
+        $estadoVia->save(); 
+
+        return response()->json(['message' => 'EstadoVia activado con éxito']);
+    }
+
 }

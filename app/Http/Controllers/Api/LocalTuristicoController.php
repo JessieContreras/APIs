@@ -184,6 +184,25 @@ class LocalTuristicoController extends Controller
         return response()->json(['message' => 'Local turístico eliminado con éxito'], 200);
     }
 
+    public function activar(string $id)
+    {
+        $localTuristico = LocalTuristico::find($id);
+
+        if (!$localTuristico) {
+            return response()->json(['message' => 'LocalTuristico no encontrado'], 404);
+        }
+
+        if ($localTuristico->estado !== 'inactivo') {
+            return response()->json(['message' => 'El LocalTuristico ya se encuentra activo'], 403); // 403 Forbidden
+        }
+
+        // Cambiar el estado a activo
+        $localTuristico->estado = 'activo'; 
+        $localTuristico->save(); 
+
+        return response()->json(['message' => 'LocalTuristico activado con éxito']);
+    }
+
     public function mostrarDataLocal($id)
     {
         // Obtener el local turístico
@@ -237,6 +256,8 @@ class LocalTuristicoController extends Controller
         // Retornar los locales turísticos encontrados
         return response()->json($localesTuristicos, 200);
     }
+    
+   
 
 
 

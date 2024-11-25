@@ -121,4 +121,23 @@ class InformacionGeneralController extends Controller
         return response()->json(['message' => 'Informacion general eliminada con éxito'], 200);
 
     }
+    
+    public function activar(string $id)
+    {
+        $informacionGeneral = InformacionGeneral::find($id);
+
+        if (!$informacionGeneral) {
+            return response()->json(['message' => 'InformacionGeneral no encontrado'], 404);
+        }
+
+        if ($informacionGeneral->estado !== 'inactivo') {
+            return response()->json(['message' => 'El InformacionGeneral ya se encuentra activo'], 403); // 403 Forbidden
+        }
+
+        // Cambiar el estado a activo
+        $informacionGeneral->estado = 'activo'; 
+        $informacionGeneral->save(); 
+
+        return response()->json(['message' => 'InformacionGeneral activado con éxito']);
+    }
 }

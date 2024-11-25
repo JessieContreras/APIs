@@ -183,4 +183,23 @@ class HorarioAtencionController extends Controller
         return response()->json(['message' => 'El horario de atención eliminado con éxito'], 200);
 
     }
+
+    public function activar(string $id)
+    {
+        $horarioAtencion = HorarioAtencion::find($id);
+
+        if (!$horarioAtencion) {
+            return response()->json(['message' => 'HorarioAtencion no encontrado'], 404);
+        }
+
+        if ($horarioAtencion->estado !== 'inactivo') {
+            return response()->json(['message' => 'El HorarioAtencion ya se encuentra activo'], 403); // 403 Forbidden
+        }
+
+        // Cambiar el estado a activo
+        $horarioAtencion->estado = 'activo'; 
+        $horarioAtencion->save(); 
+
+        return response()->json(['message' => 'HorarioAtencion activado con éxito']);
+    }
 }
