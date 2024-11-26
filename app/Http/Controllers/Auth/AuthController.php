@@ -94,7 +94,7 @@ class AuthController extends Controller
         }
 
         $credenciales = $request->only('email', 'password');
-
+       
         try {
             // Validar credenciales y obtener el usuario autenticado
             if (!$token = JWTAuth::attempt($credenciales)) {
@@ -112,11 +112,17 @@ class AuthController extends Controller
                 ], 403);
             }
 
+            if ($user->tipo == 'Admin') {
+                $administrador = Administrador::find($user->id);
+
+            }
+
             // Añadir el tipo de usuario al payload del token
             $customPayload = [
-                'sub' => $user->id, // ID del usuario
-                'email' => $user->email, // Email
-                'tipo' => $user->tipo, // Tipo de usuario
+                'sub' => $user->id, 
+                'email' => $user->email, 
+                'tipo' => $user->tipo, 
+                'name' => $user->name,
             ];
 
             // Generar el token con el payload personalizado
