@@ -34,4 +34,16 @@ class LocalTuristico extends Model
         return $this->belongsToMany(EtiquetaTuristica::class, 'local_etiqueta', 'id_local', 'id_etiqueta')
                     ->withPivot('estado');
     }
+
+    // LocalTuristico.php
+    public function dueno()
+    {
+        return $this->belongsTo(DuenoLocal::class, 'id_dueno');
+    }
+
+    public function parroquia()
+    {
+        return $this->belongsTo(Parroquia::class, 'id_parroquia');
+    }
+
 }

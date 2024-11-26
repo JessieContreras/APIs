@@ -11,45 +11,129 @@ use Illuminate\Http\Request;
 
 class LocalTuristicoController extends Controller
 {
+    // LocalTuristicoController.php
+
     public function index()
     {
-        $localTuristico = LocalTuristico::all();
+        $localesTuristicos = LocalTuristico::with(['dueno', 'parroquia'])->get();
+
+        $datos = $localesTuristicos->map(function ($local) {
+            return [
+                'id' => $local->id,
+                'nombre' => $local->nombre,
+                'descripcion' => $local->descripcion,
+                'id_dueno' => $local->id_dueno,
+                'dueno' => $local->dueno ? $local->dueno->nombre . ' ' . $local->dueno->apellido : null,
+                'direccion' => $local->direccion,
+                'latitud' => $local->latitud,
+                'longitud' => $local->longitud,
+                'id_parroquia' => $local->id_parroquia,
+                'parroquia' => $local->parroquia ? $local->parroquia->nombre : null,
+                'estado' => $local->estado,
+                'creado_por' => $local->creado_por,
+                'editado_por' => $local->editado_por,
+                'fecha_creacion' => $local->fecha_creacion,
+                'fecha_ultima_edicion' => $local->fecha_ultima_edicion,
+            ];
+        });
+
         return response()->json([
-            'cantidad' => $localTuristico->count(),
-            'datos' => $localTuristico
+            'cantidad' => $datos->count(),
+            'datos' => $datos
         ], 200);
     }
 
     public function show($id)
     {
-        $localTuristico = LocalTuristico::find($id);
+        $local = LocalTuristico::with(['dueno', 'parroquia'])->find($id);
 
-        if (!$localTuristico) {
-            return response()->json(['message' => 'Local Turistico no encontrada'], 404);
+        if (!$local) {
+            return response()->json(['message' => 'Local turístico no encontrado'], 404);
         }
 
-        return response()->json($localTuristico, 200);
+        $dato = [
+            'id' => $local->id,
+            'nombre' => $local->nombre,
+            'descripcion' => $local->descripcion,
+            'id_dueno' => $local->id_dueno,
+            'dueno' => $local->dueno ? $local->dueno->nombre . ' ' . $local->dueno->apellido : null,
+            'direccion' => $local->direccion,
+            'latitud' => $local->latitud,
+            'longitud' => $local->longitud,
+            'id_parroquia' => $local->id_parroquia,
+            'parroquia' => $local->parroquia ? $local->parroquia->nombre : null,
+            'estado' => $local->estado,
+            'creado_por' => $local->creado_por,
+            'editado_por' => $local->editado_por,
+            'fecha_creacion' => $local->fecha_creacion,
+            'fecha_ultima_edicion' => $local->fecha_ultima_edicion,
+        ];
+
+        return response()->json($dato, 200);
     }
 
     public function indexActivos()
     {
-        $activos = LocalTuristico::where('estado', 'activo')->get();
+        $localesActivos = LocalTuristico::with(['dueno', 'parroquia'])->where('estado', 'activo')->get();
+
+        $datos = $localesActivos->map(function ($local) {
+            return [
+                'id' => $local->id,
+                'nombre' => $local->nombre,
+                'descripcion' => $local->descripcion,
+                'id_dueno' => $local->id_dueno,
+                'dueno' => $local->dueno ? $local->dueno->nombre . ' ' . $local->dueno->apellido : null,
+                'direccion' => $local->direccion,
+                'latitud' => $local->latitud,
+                'longitud' => $local->longitud,
+                'id_parroquia' => $local->id_parroquia,
+                'parroquia' => $local->parroquia ? $local->parroquia->nombre : null,
+                'estado' => $local->estado,
+                'creado_por' => $local->creado_por,
+                'editado_por' => $local->editado_por,
+                'fecha_creacion' => $local->fecha_creacion,
+                'fecha_ultima_edicion' => $local->fecha_ultima_edicion,
+            ];
+        });
+
         return response()->json([
-            'cantidad' => $activos->count(),
-            'datos' => $activos
+            'cantidad' => $datos->count(),
+            'datos' => $datos
         ], 200);
     }
 
-    public function showActivo(string $id)
+    public function showActivo($id)
     {
-        $localTuristico = LocalTuristico::where('id', $id)->where('estado', 'activo')->first();
-    
-        if (!$localTuristico) {
-            return response()->json(['message' => 'Local Turistico no encontrada o no está activo'], 404);
+        $local = LocalTuristico::with(['dueno', 'parroquia'])
+            ->where('id', $id)
+            ->where('estado', 'activo')
+            ->first();
+
+        if (!$local) {
+            return response()->json(['message' => 'Local turístico no encontrado o no está activo'], 404);
         }
-    
-        return response()->json($localTuristico, 200);
+
+        $dato = [
+            'id' => $local->id,
+            'nombre' => $local->nombre,
+            'descripcion' => $local->descripcion,
+            'id_dueno' => $local->id_dueno,
+            'dueno' => $local->dueno ? $local->dueno->nombre . ' ' . $local->dueno->apellido : null,
+            'direccion' => $local->direccion,
+            'latitud' => $local->latitud,
+            'longitud' => $local->longitud,
+            'id_parroquia' => $local->id_parroquia,
+            'parroquia' => $local->parroquia ? $local->parroquia->nombre : null,
+            'estado' => $local->estado,
+            'creado_por' => $local->creado_por,
+            'editado_por' => $local->editado_por,
+            'fecha_creacion' => $local->fecha_creacion,
+            'fecha_ultima_edicion' => $local->fecha_ultima_edicion,
+        ];
+
+        return response()->json($dato, 200);
     }
+
 
     public function store(Request $request)
     {

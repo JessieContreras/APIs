@@ -30,4 +30,11 @@ class DuenoLocal extends Model
     const CREATED_AT = 'fecha_creacion';
     const UPDATED_AT = 'fecha_ultima_edicion';
 
+    // DuenoLocal.php
+    public function locales()
+    {
+        return $this->hasMany(LocalTuristico::class, 'id_dueno');
+    }
+
+
 }
