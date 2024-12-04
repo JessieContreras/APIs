@@ -186,7 +186,7 @@ Route::middleware([JWTMiddleware::class])->group(function () {
         Route::post('/', [AnuncioController::class, 'store']); 
         Route::put('/{id}', [AnuncioController::class, 'update']); 
         Route::delete('/{id}', [AnuncioController::class, 'destroy']); 
-        Route::post('/activar/{id}', [AdministradorController::class, 'activar']);  
+        Route::post('/activar/{id}', [AnuncioController::class, 'activar']);  
     });
 
 
