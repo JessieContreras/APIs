@@ -19,9 +19,11 @@ use App\Http\Controllers\Api\ActividadPuntoTuristicoController;
 use App\Http\Controllers\Api\PuntoTuristicoController;
 use App\Http\Controllers\Api\PuntoTuristicoEtiquetaController;
 use App\Http\Controllers\Api\AnuncioController;
+use App\Http\Controllers\Api\ConsultaController;
 
 Route::post('login', [AuthController::class,'login']);
 Route::post('registrarAdministrador', [AuthController::class,'registrarAdministrador']);
+
 
 
 Route::middleware([JWTMiddleware::class])->group(function () {
@@ -29,6 +31,9 @@ Route::middleware([JWTMiddleware::class])->group(function () {
     
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/decode-token', [AuthController::class, 'descomprimirToken']);
+
+    
+    Route::get('contarTodo', [ConsultaController::class,'ContarTodo']);
          
     Route::prefix('administradores')->group(function () {
         Route::get('/', [AdministradorController::class, 'index']); 
@@ -190,8 +195,6 @@ Route::middleware([JWTMiddleware::class])->group(function () {
         Route::delete('/{id_punto_turistico}/{id_etiqueta}', [PuntoTuristicoEtiquetaController::class, 'destroy']);     
     });
 
-    
-
     Route::prefix('anuncios')->group(function () {
         Route::get('/', [AnuncioController::class, 'index']); 
         Route::get('/{id}', [AnuncioController::class, 'show']); 
@@ -200,6 +203,8 @@ Route::middleware([JWTMiddleware::class])->group(function () {
         Route::delete('/{id}', [AnuncioController::class, 'destroy']); 
         Route::post('/activar/{id}', [AnuncioController::class, 'activar']);  
     });
+
+
 
 
     
