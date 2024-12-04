@@ -88,15 +88,18 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        // Verificar si los campos requeridos están presentes
-        if (!$request->has(['email', 'password'])) {
-            return response()->json(['message' => 'Faltan campos requeridos.'], 400);
-        }
+        $id = 0;
+
+        // Validar campos requeridos
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|string',
+        ]);
 
         $credenciales = $request->only('email', 'password');
-       
+
         try {
-            // Validar credenciales y obtener el usuario autenticado
+            // Intentar autenticar al usuario
             if (!$token = JWTAuth::attempt($credenciales)) {
                 return response()->json([
                     'error' => 'Credenciales inválidas'
@@ -112,21 +115,30 @@ class AuthController extends Controller
                 ], 403);
             }
 
+            // Verificar el tipo de usuario y buscar en la tabla correspondiente
             if ($user->tipo == 'Admin') {
-                $administrador = Administrador::find($user->id);
-
+                $administrador = Administrador::where('email', $user->email)->first();
+                if ($administrador) {
+                    $id = $administrador->id;
+                }
+            } elseif ($user->tipo == 'asistente') {
+                $asistente = Asistente::where('email', $user->email)->first();
+                if ($asistente) {
+                    $id = $asistente->id;
+                }
             }
 
-            // Añadir el tipo de usuario al payload del token
+            // Crear un payload personalizado
             $customPayload = [
-                'sub' => $user->id, 
-                'email' => $user->email, 
-                'tipo' => $user->tipo, 
+                'sub' => $user->id,
+                'email' => $user->email,
+                'tipo' => $user->tipo,
                 'name' => $user->name,
+                'ID' => $id,
             ];
 
-            // Generar el token con el payload personalizado
-            $token = JWTAuth::claims($customPayload)->attempt($credenciales);
+            // Generar un token con el payload personalizado
+            $token = JWTAuth::customClaims($customPayload)->fromUser($user);
 
         } catch (\Tymon\JWTAuth\Exceptions\JWTException $e) {
             return response()->json([
@@ -134,11 +146,12 @@ class AuthController extends Controller
             ], 500);
         }
 
-        // Retornar el token
+        // Retornar el token generado
         return response()->json([
             'token' => $token
         ]);
     }
+
 
     public function logout(Request $request)
     {
