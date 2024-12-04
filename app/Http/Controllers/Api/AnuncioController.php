@@ -11,7 +11,7 @@ class AnuncioController extends Controller
     // Listar todos los anuncios
     public function index()
     {
-        $anuncios = Anuncio::all();
+        $anuncios = Anuncio::orderBy('id', 'desc')->get();
         return response()->json([
             'cantidad' => $anuncios->count(),
             'datos' => $anuncios
@@ -33,7 +33,7 @@ class AnuncioController extends Controller
      
     public function indexActivos()
     {
-        $activos = Anuncio::where('estado', 'activo')->get();
+        $activos = Anuncio::where('estado', 'activo')->orderBy('id', 'desc')->get();
         return response()->json([
             'cantidad' => $activos->count(),
             'datos' => $activos

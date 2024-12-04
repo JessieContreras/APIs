@@ -11,7 +11,7 @@ class HorarioAtencionController extends Controller
     // Listar todos los horarios de atención
     public function index()
     {
-        $horarioAtencion = HorarioAtencion::all();
+        $horarioAtencion = HorarioAtencion::orderBy('id', 'desc')->get(); 
         return response()->json([
             'cantidad' => $horarioAtencion->count(),
             'datos' => $horarioAtencion
@@ -33,7 +33,7 @@ class HorarioAtencionController extends Controller
     // Mostrar todos los HorarioAtencion activos
     public function indexActivos()
     {
-        $activos = HorarioAtencion::where('estado', 'activo')->get();
+        $activos = HorarioAtencion::where('estado', 'activo')->orderBy('id', 'desc')->get();
         return response()->json([
             'cantidad' => $activos->count(),
             'datos' => $activos

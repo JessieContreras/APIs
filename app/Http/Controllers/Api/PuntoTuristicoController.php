@@ -13,7 +13,7 @@ class PuntoTuristicoController extends Controller
     // Obtener todos los puntos turísticos
     public function index()
     {
-        $puntosTuristicos = PuntoTuristico::with('parroquia')->get();
+        $puntosTuristicos = PuntoTuristico::orderBy('id', 'desc')->with('parroquia')->get();
     
         return response()->json([
             'cantidad' => $puntosTuristicos->count(),
@@ -53,7 +53,7 @@ class PuntoTuristicoController extends Controller
     // Obtener todos los puntos turísticos activos
     public function indexActivos()
     {
-        $puntosActivos = PuntoTuristico::with('parroquia')->where('estado', 'activo')->get();
+        $puntosActivos = PuntoTuristico::with('parroquia')->where('estado', 'activo')->orderBy('id', 'desc')->get();
 
         return response()->json([
             'cantidad' => $puntosActivos->count(),

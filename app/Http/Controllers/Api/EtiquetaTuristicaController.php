@@ -11,7 +11,7 @@ class EtiquetaTuristicaController extends Controller
     // Listar todas las etiquetas turísticas
     public function index()
     {
-        $etiquetaTuristica = EtiquetaTuristica::all();
+        $etiquetaTuristica = EtiquetaTuristica::orderBy('id', 'desc')->get(); 
         return response()->json([
             'cantidad' => $etiquetaTuristica->count(),
             'datos' => $etiquetaTuristica
@@ -33,7 +33,7 @@ class EtiquetaTuristicaController extends Controller
     // Mostrar todos los EtiquetaTuristica activos
     public function indexActivos()
     {
-        $activos = EtiquetaTuristica::where('estado', 'activo')->get();
+        $activos = EtiquetaTuristica::where('estado', 'activo')->orderBy('id', 'desc')->get();
         return response()->json([
             'cantidad' => $activos->count(),
             'datos' => $activos

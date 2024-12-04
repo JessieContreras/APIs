@@ -8,15 +8,17 @@ use App\Models\User;
 
 class AdministradorController extends Controller
 {
-    // Mostrar todos los Administradores (activos e inactivos)
+    
+    // Mostrar todos los Administradores (activos e inactivos) en orden descendente por ID
     public function index()
     {
-        $administrador = Administrador::all(); 
+        $administrador = Administrador::orderBy('id', 'desc')->get(); 
         return response()->json([
             'cantidad' => $administrador->count(),
             'datos' => $administrador
         ], 200);
     }
+
 
     // Buscar un Administrador por ID sin importar el estado
     public function show($id)
@@ -30,15 +32,16 @@ class AdministradorController extends Controller
         return response()->json($administrador, 200);
     }
 
-    // Mostrar todos los Administradores activos
+    // Mostrar todos los Administradores activos en orden descendente por ID
     public function indexActivos()
     {
-        $activos = Administrador::where('estado', 'activo')->get();
+        $activos = Administrador::where('estado', 'activo')->orderBy('id', 'desc')->get();
         return response()->json([
             'cantidad' => $activos->count(),
             'datos' => $activos
         ], 200);
     }
+
 
     // Buscar un Administrador por ID solo si está activo
     public function showActivo(string $id)

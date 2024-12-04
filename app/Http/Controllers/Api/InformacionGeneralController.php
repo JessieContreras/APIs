@@ -10,7 +10,7 @@ class InformacionGeneralController extends Controller
 {
     public function index()
     {
-        $informacionGeneral = InformacionGeneral::all();
+        $informacionGeneral = InformacionGeneral::orderBy('id', 'desc')->get(); 
         return response()->json([
             'cantidad' => $informacionGeneral->count(),
             'datos' => $informacionGeneral
@@ -30,7 +30,7 @@ class InformacionGeneralController extends Controller
 
     public function indexActivos()
     {
-        $activos = InformacionGeneral::where('estado', 'activo')->get();
+        $activos = InformacionGeneral::where('estado', 'activo')->orderBy('id', 'desc')->get();
         return response()->json([
             'cantidad' => $activos->count(),
             'datos' => $activos

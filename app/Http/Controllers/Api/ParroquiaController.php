@@ -11,7 +11,7 @@ class ParroquiaController extends Controller
 {
     public function index()
     {
-        $parroquia = Parroquia::all();
+        $parroquia = Parroquia::orderBy('id', 'desc')->get();
         return response()->json([
             'cantidad' => $parroquia->count(),
             'datos' => $parroquia
@@ -31,7 +31,7 @@ class ParroquiaController extends Controller
 
     public function indexActivos()
     {
-        $activos = Parroquia::where('estado', 'activo')->get();
+        $activos = Parroquia::where('estado', 'activo')->orderBy('id', 'desc')->get();
         return response()->json([
             'cantidad' => $activos->count(),
             'datos' => $activos

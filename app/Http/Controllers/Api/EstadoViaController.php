@@ -11,7 +11,7 @@ class EstadoViaController extends Controller
     // Listar todos los estados de vías
     public function index()
     {
-        $estadoVia = EstadoVia::all();
+        $estadoVia = EstadoVia::orderBy('id', 'desc')->get(); 
         return response()->json([
             'cantidad' => $estadoVia->count(),
             'datos' => $estadoVia
@@ -33,7 +33,7 @@ class EstadoViaController extends Controller
     // Mostrar todas las vias no eliminadas
     public function indexActivos()
     {
-        $activos = EstadoVia::where('estado', 'activo')->get();
+        $activos = EstadoVia::where('Eliminado', 'no')->orderBy('id', 'desc')->get();
         return response()->json([
             'cantidad' => $activos->count(),
             'datos' => $activos

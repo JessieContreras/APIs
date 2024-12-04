@@ -10,7 +10,7 @@ class ServicioLocalController extends Controller
 {
     public function index()
     {
-        $servicioLocal = ServicioLocal::all();
+        $servicioLocal = ServicioLocal::orderBy('id', 'desc')->get(); 
         return response()->json([
             'cantidad' => $servicioLocal->count(),
             'datos' => $servicioLocal
@@ -30,7 +30,7 @@ class ServicioLocalController extends Controller
 
     public function indexActivos()
     {
-        $activos = ServicioLocal::where('estado', 'activo')->get();
+        $activos = ServicioLocal::where('estado', 'activo')->orderBy('id', 'desc')->get();
         return response()->json([
             'cantidad' => $activos->count(),
             'datos' => $activos

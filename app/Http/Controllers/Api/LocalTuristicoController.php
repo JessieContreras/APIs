@@ -15,7 +15,7 @@ class LocalTuristicoController extends Controller
 
     public function index()
     {
-        $localesTuristicos = LocalTuristico::with(['dueno', 'parroquia'])->get();
+        $localesTuristicos = LocalTuristico::orderBy('id', 'desc')->with(['dueno', 'parroquia'])->get();
 
         $datos = $localesTuristicos->map(function ($local) {
             return [
@@ -74,7 +74,7 @@ class LocalTuristicoController extends Controller
 
     public function indexActivos()
     {
-        $localesActivos = LocalTuristico::with(['dueno', 'parroquia'])->where('estado', 'activo')->get();
+        $localesActivos = LocalTuristico::orderBy('id', 'desc')->with(['dueno', 'parroquia'])->where('estado', 'activo')->get();
 
         $datos = $localesActivos->map(function ($local) {
             return [

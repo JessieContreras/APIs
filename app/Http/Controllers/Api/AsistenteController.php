@@ -14,7 +14,7 @@ class AsistenteController extends Controller
 {
     public function index()
     {
-        $asistentes = Asistente::all();
+        $asistentes = Asistente::orderBy('id', 'desc')->get();
         return response()->json([
             'cantidad' => $asistentes->count(),
             'datos' => $asistentes
@@ -36,7 +36,7 @@ class AsistenteController extends Controller
     // Mostrar todos los Administradores activos
     public function indexActivos()
     {
-        $activos = Asistente::where('estado', 'activo')->get();
+        $activos = Asistente::where('estado', 'activo')->orderBy('id', 'desc')->get();
         return response()->json([
             'cantidad' => $activos->count(),
             'datos' => $activos
