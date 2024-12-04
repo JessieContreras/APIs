@@ -22,7 +22,6 @@ use App\Http\Controllers\Api\AnuncioController;
 Route::post('login', [AuthController::class,'login']);
 Route::post('registrarAdministrador', [AuthController::class,'registrarAdministrador']);
 
-Route::get('/', [EtiquetaTuristicaController::class, 'index']); 
 
 Route::middleware([JWTMiddleware::class])->group(function () {
 
@@ -76,6 +75,7 @@ Route::middleware([JWTMiddleware::class])->group(function () {
     */
 
     Route::prefix('etiquetasTuristicas')->group(function () {
+        Route::get('/', [EtiquetaTuristicaController::class, 'index']); 
         Route::get('/activos', [EtiquetaTuristicaController::class, 'indexActivos']);
         Route::get('/{id}', [EtiquetaTuristicaController::class, 'show']);
         Route::get('/activos/{id}', [EtiquetaTuristicaController::class, 'showActivo']); 
