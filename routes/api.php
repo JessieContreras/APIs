@@ -15,6 +15,7 @@ use App\Http\Controllers\Api\LocalEtiquetaController;
 use App\Http\Controllers\Api\LocalTuristicoController;
 use App\Http\Controllers\Api\ParroquiaController;
 use App\Http\Controllers\Api\ServicioLocalController;
+use App\Http\Controllers\Api\ActividadPuntoTuristicoController;
 use App\Http\Controllers\Api\PuntoTuristicoController;
 use App\Http\Controllers\Api\PuntoTuristicoEtiquetaController;
 use App\Http\Controllers\Api\AnuncioController;
@@ -154,6 +155,17 @@ Route::middleware([JWTMiddleware::class])->group(function () {
         Route::put('/{id}', [ServicioLocalController::class, 'update']); 
         Route::delete('/{id}', [ServicioLocalController::class, 'destroy']); 
         Route::post('/activar/{id}', [ServicioLocalController::class, 'activar']); 
+    });
+
+    Route::prefix('actividadPuntoTuristico')->group(function () {
+        Route::get('/', [ActividadPuntoTuristicoController::class, 'index']);
+        Route::get('/activos', [ActividadPuntoTuristicoController::class, 'indexActivos']); 
+        Route::get('/{id}', [ActividadPuntoTuristicoController::class, 'show']); 
+        Route::get('/activos/{id}', [ActividadPuntoTuristicoController::class, 'showActivo']); 
+        Route::post('/', [ActividadPuntoTuristicoController::class, 'store']); 
+        Route::put('/{id}', [ActividadPuntoTuristicoController::class, 'update']); 
+        Route::delete('/{id}', [ActividadPuntoTuristicoController::class, 'destroy']); 
+        Route::post('/activar/{id}', [ActividadPuntoTuristicoController::class, 'activar']); 
     });
 
     Route::prefix('puntoTuristico')->group(function () {
