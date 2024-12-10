@@ -67,6 +67,11 @@ class ConsultaController extends Controller
         ], 200);
     }
 
+    public function LocalPuntoTuristico($id_etiqueta){
+
+        
+    }
+
 
 
 

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class LocalEtiqueta extends Model
 {
     use HasFactory;
+
     protected $table = 'local_etiqueta';
 
     protected $fillable = [
@@ -20,5 +21,8 @@ class LocalEtiqueta extends Model
         'fecha_ultima_edicion',
     ];
 
-    public $timestamps = false; // Usamos las columnas `fecha_creacion` y `fecha_ultima_edicion`
+    public $timestamps = false; // No usa created_at ni updated_at
+
+    public $incrementing = false; // No es una clave primaria autoincremental
+    protected $primaryKey = null; // Indicar que no hay clave primaria
 }
