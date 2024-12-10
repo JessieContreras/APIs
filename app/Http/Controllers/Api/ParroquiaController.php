@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\Parroquia;
 use App\Models\PuntoTuristico;
+use App\Models\Imagen;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
@@ -31,10 +32,25 @@ class ParroquiaController extends Controller
 
     public function indexActivos()
     {
+        // Obtener las etiquetas activas
         $activos = Parroquia::where('estado', 'activo')->orderBy('id', 'desc')->get();
+
+        // Obtener las imágenes de tipo "etiquetas"
+        $imagenes = Imagen::where('tipo', 'parroquia')->get(['id_entidad', 'ruta_imagen']);
+
+        // Crear un arreglo de imágenes asociadas a los ids de las etiquetas activas
+        $imagenesAsociadas = $imagenes->pluck('ruta_imagen', 'id_entidad')->toArray();
+
+        // Asociar la ruta de la imagen a cada parroquia activa
+        $activosConImagenes = $activos->map(function ($parroquia) use ($imagenesAsociadas) {
+            $parroquia->ruta_imagen = isset($imagenesAsociadas[$parroquia->id]) ? $imagenesAsociadas[$parroquia->id] : null;
+            return $parroquia;
+        });
+
+        // Devolver los datos con las rutas de las imágenes
         return response()->json([
-            'cantidad' => $activos->count(),
-            'datos' => $activos
+            'cantidad' => $activosConImagenes->count(),
+            'datos' => $activosConImagenes
         ], 200);
     }
 

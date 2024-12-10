@@ -20,9 +20,16 @@ use App\Http\Controllers\Api\PuntoTuristicoController;
 use App\Http\Controllers\Api\PuntoTuristicoEtiquetaController;
 use App\Http\Controllers\Api\AnuncioController;
 use App\Http\Controllers\Api\ConsultaController;
+use App\Http\Controllers\Api\ImagenController;
 
 Route::post('login', [AuthController::class,'login']);
 Route::post('registrarAdministrador', [AuthController::class,'registrarAdministrador']);
+
+//para la movil
+Route::get('localTuristicoMovil', [LocalTuristicoController::class, 'indexActivos']); 
+Route::get('categorias', [EtiquetaTuristicaController::class, 'indexActivos']);
+Route::get('/parroquiasMovil', [ParroquiaController::class, 'indexActivos']); 
+Route::get('imagenesMovil', [ImagenController::class, 'index']); 
 
 
 
@@ -34,7 +41,9 @@ Route::middleware([JWTMiddleware::class])->group(function () {
 
     
     Route::get('contarTodo', [ConsultaController::class,'ContarTodo']);
-         
+    Route::get('MapaDashboard', [ConsultaController::class,'MapaDashboard']);     
+    Route::get('MapaDashboardTODO', [ConsultaController::class,'MapaDashboardTODO']);   
+
     Route::prefix('administradores')->group(function () {
         Route::get('/', [AdministradorController::class, 'index']); 
         Route::get('/activos', [AdministradorController::class, 'indexActivos']); 
@@ -82,7 +91,6 @@ Route::middleware([JWTMiddleware::class])->group(function () {
 
     Route::prefix('etiquetasTuristicas')->group(function () {
         Route::get('/', [EtiquetaTuristicaController::class, 'index']); 
-        Route::get('/activos', [EtiquetaTuristicaController::class, 'indexActivos']);
         Route::get('/{id}', [EtiquetaTuristicaController::class, 'show']);
         Route::get('/activos/{id}', [EtiquetaTuristicaController::class, 'showActivo']); 
         Route::post('/', [EtiquetaTuristicaController::class, 'store']);
@@ -100,6 +108,8 @@ Route::middleware([JWTMiddleware::class])->group(function () {
         Route::put('/{id}', [HorarioAtencionController::class, 'update']); 
         Route::delete('/{id}', [HorarioAtencionController::class, 'destroy']); 
         Route::post('/activar/{id}', [HorarioAtencionController::class, 'activar']); 
+        Route::get('/HorariosPorIDLocal/{id}', [HorarioAtencionController::class, 'HorariosPorIDLocal']); 
+        
     });
 
     /*
@@ -128,7 +138,6 @@ Route::middleware([JWTMiddleware::class])->group(function () {
 
     Route::prefix('localTuristico')->group(function () {
         Route::get('/', [LocalTuristicoController::class, 'index']);
-        Route::get('/activos', [LocalTuristicoController::class, 'indexActivos']); 
         Route::get('/{id}', [LocalTuristicoController::class, 'show']); 
         Route::get('/activos/{id}', [LocalTuristicoController::class, 'showActivo']); 
         Route::post('/', [LocalTuristicoController::class, 'store']); 
@@ -141,7 +150,6 @@ Route::middleware([JWTMiddleware::class])->group(function () {
 
     Route::prefix('parroquia')->group(function () {
         Route::get('/', [ParroquiaController::class, 'index']);
-        Route::get('/activos', [ParroquiaController::class, 'indexActivos']); 
         Route::get('/{id}', [ParroquiaController::class, 'show']); 
         Route::get('/activos/{id}', [ParroquiaController::class, 'showActivo']); 
         Route::post('/', [ParroquiaController::class, 'store']); 
@@ -160,6 +168,7 @@ Route::middleware([JWTMiddleware::class])->group(function () {
         Route::put('/{id}', [ServicioLocalController::class, 'update']); 
         Route::delete('/{id}', [ServicioLocalController::class, 'destroy']); 
         Route::post('/activar/{id}', [ServicioLocalController::class, 'activar']); 
+        Route::get('/ServiciosPorIDLocal/{id}', [ServicioLocalController::class, 'ServiciosPorIDLocal']); 
     });
 
     Route::prefix('actividadPuntoTuristico')->group(function () {
@@ -171,6 +180,7 @@ Route::middleware([JWTMiddleware::class])->group(function () {
         Route::put('/{id}', [ActividadPuntoTuristicoController::class, 'update']); 
         Route::delete('/{id}', [ActividadPuntoTuristicoController::class, 'destroy']); 
         Route::post('/activar/{id}', [ActividadPuntoTuristicoController::class, 'activar']); 
+        Route::get('/ActividadPorIDPunto/{id}', [ActividadPuntoTuristicoController::class, 'ActividadPorIDPunto']); 
     });
 
     Route::prefix('puntoTuristico')->group(function () {
@@ -204,8 +214,12 @@ Route::middleware([JWTMiddleware::class])->group(function () {
         Route::post('/activar/{id}', [AnuncioController::class, 'activar']);  
     });
 
-
-
-
-    
+    Route::prefix('imagenes')->group(function () {
+        Route::get('/', [ImagenController::class, 'index']); 
+        Route::get('/{id}', [ImagenController::class, 'show']); 
+        Route::post('/', [ImagenController::class, 'store']); 
+        Route::put('/{id}', [ImagenController::class, 'update']); 
+        Route::delete('/{id}', [ImagenController::class, 'destroy']); 
+        Route::post('/activar/{id}', [ImagenController::class, 'activar']);  
+    });
 });

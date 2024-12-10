@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\EtiquetaTuristica;
+use App\Models\Imagen;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
@@ -33,12 +34,28 @@ class EtiquetaTuristicaController extends Controller
     // Mostrar todos los EtiquetaTuristica activos
     public function indexActivos()
     {
+        // Obtener las etiquetas activas
         $activos = EtiquetaTuristica::where('estado', 'activo')->orderBy('id', 'desc')->get();
+
+        // Obtener las imágenes de tipo "etiquetas"
+        $imagenes = Imagen::where('tipo', 'etiquetas')->get(['id_entidad', 'ruta_imagen']);
+
+        // Crear un arreglo de imágenes asociadas a los ids de las etiquetas activas
+        $imagenesAsociadas = $imagenes->pluck('ruta_imagen', 'id_entidad')->toArray();
+
+        // Asociar la ruta de la imagen a cada etiqueta activa
+        $activosConImagenes = $activos->map(function ($etiqueta) use ($imagenesAsociadas) {
+            $etiqueta->ruta_imagen = isset($imagenesAsociadas[$etiqueta->id]) ? $imagenesAsociadas[$etiqueta->id] : null;
+            return $etiqueta;
+        });
+
+        // Devolver los datos con las rutas de las imágenes
         return response()->json([
-            'cantidad' => $activos->count(),
-            'datos' => $activos
+            'cantidad' => $activosConImagenes->count(),
+            'datos' => $activosConImagenes
         ], 200);
     }
+
 
     // Buscar una etiquetaTuristica por ID solo si está activo
     public function showActivo(string $id)

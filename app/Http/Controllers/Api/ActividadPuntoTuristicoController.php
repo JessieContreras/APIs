@@ -145,4 +145,21 @@ class ActividadPuntoTuristicoController extends Controller
 
         return response()->json(['message' => 'ActividadPuntoTuristico activado con éxito']);
     }
+
+    public function ActividadPorIDPunto($id)
+    {
+        // Obtener los servicios activos para el local dado
+        $actividadPuntoTuristico = ActividadPuntoTuristico::where('id_punto_turistico', $id)->get();
+
+        // Verificar si la colección está vacía
+        if ($actividadPuntoTuristico->isEmpty()) {
+            return response()->json(['message' => 'El punto turístico no tiene actividades activas o no fue encontrado'], 404);
+        }
+
+        // Retornar la respuesta con los datos
+        return response()->json([
+            'cantidad' => $actividadPuntoTuristico->count(),
+            'datos' => $actividadPuntoTuristico
+        ], 200);
+    }
 }

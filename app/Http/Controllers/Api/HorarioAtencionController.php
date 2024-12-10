@@ -202,4 +202,21 @@ class HorarioAtencionController extends Controller
 
         return response()->json(['message' => 'HorarioAtencion activado con éxito']);
     }
+
+    public function HorariosPorIDLocal($id)
+    {
+        // Obtener los servicios activos para el local dado
+        $horarioAtencion = HorarioAtencion::where('id_local', $id)->get();
+
+        // Verificar si la colección está vacía
+        if ($horarioAtencion->isEmpty()) {
+            return response()->json(['message' => 'El local turístico no tiene horarios activos o no fue encontrado'], 404);
+        }
+
+        // Retornar la respuesta con los datos
+        return response()->json([
+            'cantidad' => $horarioAtencion->count(),
+            'datos' => $horarioAtencion
+        ], 200);
+    }
 }

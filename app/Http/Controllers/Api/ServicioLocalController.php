@@ -145,4 +145,22 @@ class ServicioLocalController extends Controller
 
         return response()->json(['message' => 'ServicioLocal activado con éxito']);
     }
+
+    public function ServiciosPorIDLocal($id)
+    {
+        // Obtener los servicios activos para el local dado
+        $servicioLocal = ServicioLocal::where('id_local', $id)->get();
+
+        // Verificar si la colección está vacía
+        if ($servicioLocal->isEmpty()) {
+            return response()->json(['message' => 'El local turístico no tiene servicios activos o no fue encontrado'], 404);
+        }
+
+        // Retornar la respuesta con los datos
+        return response()->json([
+            'cantidad' => $servicioLocal->count(),
+            'datos' => $servicioLocal
+        ], 200);
+    }
+
 }

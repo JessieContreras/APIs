@@ -35,4 +35,39 @@ class ConsultaController extends Controller
         ], 200);
     }
 
+    public function MapaDashboard()
+    {
+        $localesTuristicos = LocalTuristico::orderBy('id', 'desc')
+            ->get(['id', 'nombre', 'latitud', 'longitud']); // Seleccionar solo las columnas necesarias
+
+        $puntosTuristicos = PuntoTuristico::orderBy('id', 'desc')
+            ->get(['id', 'nombre', 'latitud', 'longitud']); // Seleccionar solo las columnas necesarias
+
+        return response()->json([
+            'localesTuristicos' => $localesTuristicos,
+            'puntosTuristicos' => $puntosTuristicos,
+        ], 200);
+    }
+
+    public function MapaDashboardTODO()
+    {
+        // Obtener datos de locales turísticos
+        $localesTuristicos = LocalTuristico::orderBy('id', 'desc')
+            ->get(['nombre', 'latitud', 'longitud']);
+
+        // Obtener datos de puntos turísticos
+        $puntosTuristicos = PuntoTuristico::orderBy('id', 'desc')
+            ->get([ 'nombre', 'latitud', 'longitud']);
+
+        // Combinar ambas colecciones
+        $todos = $localesTuristicos->merge($puntosTuristicos);
+
+        return response()->json([
+            'todos' => $todos,
+        ], 200);
+    }
+
+
+
+
 }
