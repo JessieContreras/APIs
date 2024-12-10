@@ -51,16 +51,16 @@ class ConsultaController extends Controller
 
     public function MapaDashboardTODO()
     {
-        // Obtener datos de locales turísticos
+        // Obtener datos de locales turísticos, incluyendo 'id', 'nombre', 'latitud', 'longitud'
         $localesTuristicos = LocalTuristico::orderBy('id', 'desc')
-            ->get(['nombre', 'latitud', 'longitud']);
+            ->get(['id', 'nombre', 'latitud', 'longitud']); // Seleccionamos 'id' también
 
-        // Obtener datos de puntos turísticos
+        // Obtener datos de puntos turísticos, incluyendo 'id', 'nombre', 'latitud', 'longitud'
         $puntosTuristicos = PuntoTuristico::orderBy('id', 'desc')
-            ->get([ 'nombre', 'latitud', 'longitud']);
+            ->get(['id', 'nombre', 'latitud', 'longitud']); // Seleccionamos 'id' también
 
         // Combinar ambas colecciones
-        $todos = $localesTuristicos->merge($puntosTuristicos);
+        $todos = $localesTuristicos->concat($puntosTuristicos);
 
         return response()->json([
             'todos' => $todos,
